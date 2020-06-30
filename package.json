@@ -1,0 +1,25 @@
+{
+  "name": "curso-javascript-projeto-whatsapp-clone",
+  "version": "1.0.0",
+  "description": "Um clone whatsapp com webpack e firebase",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daviamaug/whatsapp-clone-js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daviamaug/whatsapp-clone-js/issues"
+  },
+  "homepage": "https://github.com/daviamaug/whatsapp-clone-js#readme",
+  "dependencies": {
+    "webpack": "^3.1.0",
+    "webpack-dev-server": "^2.5.1"
+  }
+}
