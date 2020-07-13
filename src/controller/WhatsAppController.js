@@ -1,5 +1,14 @@
 import { Format } from './../util/Format';
 import { CameraController } from './CameraController';
+import { DocumentPreviewController } from './DocumentPreviewController';
+// import { MicrophoneController } from './MicrophoneController';
+// import { Firebase } from './../util/Firebase';
+// import { User } from './../model/User';
+// import { Chat } from './../model/Chat';
+import { Message } from '../model/Message';
+import { Base64 } from '../util/Base64';
+// import { ContactsController } from './ContactsController';
+
 
 export class WhatsAppController {
 
@@ -207,35 +216,136 @@ export class WhatsAppController {
 
       this.closeAllMainPanel()
       this.el.panelMessagesContainer.show()
+      this._camera.stop()
 
     })
     this.el.btnTakePicture.on('click', e => {
 
       console.log('take photo');
+      let dataURL = this._camera.takePicture()
+
+      this.el.pictureCamera.src = dataURL
+      this.el.pictureCamera.show()
+      this.el.videoCamera.hide()
+      this.el.btnReshootPanelCamera.show()
+      this.el.containerTakePicture.hide()
+      this.el.containerSendPicture.show()
+
+    })
+    this.el.btnReshootPanelCamera.on('click',e=>{
+
+      this.el.pictureCamera.hide()
+      this.el.videoCamera.show()
+      this.el.btnReshootPanelCamera.hide()
+      this.el.containerTakePicture.show()
+      this.el.containerSendPicture.hide()
+
+    })
+    this.el.btnSendPicture.on('click',e=>{
+
+      console.log(this.el.pictureCamera.src);
+      
 
     })
     // docs
-    this.el.btnAttachDocument.on('click', e => {
+    this.el.btnAttachDocument.on('click', event => {
 
-      this.closeAllMainPanel()
-      this.el.panelDocumentPreview.addClass('open')
-      this.el.panelDocumentPreview.css({
-        'height': '100% '
-      })
+      this.el.inputDocument.click();
 
-    })
-    this.el.btnClosePanelDocumentPreview.on('click', e => {
+  });
+
+  this.el.inputDocument.on('change', event => {
+
+      if (this.el.inputDocument.files.length) {
+
+          let file = this.el.inputDocument.files[0];
+
+          this.closeAllMainPanel();
+          this.el.panelMessagesContainer.hide();
+          this.el.panelDocumentPreview.addClass('open');
+          this.el.panelDocumentPreview.css({
+            height: 'calc(100% - 120px)'
+        });
+
+
+          this._documentPreview = new DocumentPreviewController(file);
+
+          this._documentPreview.getPriviewData().then(data => {
+
+              this.el.filePanelDocumentPreview.hide();
+              this.el.imagePanelDocumentPreview.show();
+              this.el.imgPanelDocumentPreview.src = data.src;
+              this.el.imgPanelDocumentPreview.show();
+
+              this.el.infoPanelDocumentPreview.innerHTML = data.info;
+
+          }).catch(event => {
+
+              if (event.error) {
+                  console.error(event.event);
+              } else {
+
+                  switch (file.type) {
+                      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                      case 'application/msword':
+                          this.el.iconPanelDocumentPreview.classList.value = 'jcxhw icon-doc-doc';
+                          break;
+
+                      case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                      case 'application/vnd.ms-excel':
+                          this.el.iconPanelDocumentPreview.classList.value = 'jcxhw icon-doc-xls';
+                          break;
+
+                      case 'application/vnd.ms-powerpoint':
+                      case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+                          this.el.iconPanelDocumentPreview.classList.value = 'jcxhw icon-doc-ppt';
+                          break;
+
+                      default:
+                          this.el.iconPanelDocumentPreview.classList.value = 'jcxhw icon-doc-generic';
+                  }
+
+                  this.el.filePanelDocumentPreview.show();
+                  this.el.imagePanelDocumentPreview.hide();
+
+                  this.el.filenamePanelDocumentPreview.innerHTML = file.name;
+
+              }
+
+          });
+
+      }
+
+  });
+
+  this.el.btnClosePanelDocumentPreview.on('click', event => {
 
       this.closeAllMainPanel();
-      this.el.panelMessagesContainer.show()
+      this.el.panelMessagesContainer.show();
 
-    })
-    this.el.btnSendDocument.on('click', e => {
+  });
 
-      console.log('send doc');
+  this.el.btnSendDocument.on('click', event => {
 
+      let documentFile = this.el.inputDocument.files[0];
 
-    })
+      if (documentFile.type === 'application/pdf') {
+
+          Base64.toFile(this.el.imgPanelDocumentPreview.src).then(imageFile => {
+
+              Message.sendDocument(this._activeContact.chatId, this._user.email, documentFile, imageFile, this.el.infoPanelDocumentPreview.innerHTML);
+
+          });
+
+      } else {
+
+          Message.sendDocument(this._activeContact.chatId, this._user.email, documentFile);
+
+      }
+
+      this.el.btnClosePanelDocumentPreview.click();
+
+  });
     // contact
     this.el.btnAttachContact.on('click', e => {
 
