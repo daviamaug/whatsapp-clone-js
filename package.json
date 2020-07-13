@@ -2,7 +2,7 @@
   "name": "curso-javascript-projeto-whatsapp-clone",
   "version": "1.0.0",
   "description": "um clone whatsapp com webpack e firebase",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server",
@@ -20,6 +20,7 @@
     "worker-loader": "^1.1.1"
   },
   "dependencies": {
+    "firebase": "^7.16.0",
     "pdfjs-dist": "^2.0.489"
   }
 }
