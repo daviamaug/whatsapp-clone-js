@@ -3,11 +3,11 @@ import { CameraController } from './CameraController';
 import { DocumentPreviewController } from './DocumentPreviewController';
 import { MicrophoneController } from './MicrophoneController';
 import { Firebase } from './../util/Firebase';
-// import { User } from './../model/User';
-// import { Chat } from './../model/Chat';
+import { User } from './../model/User';
+import { Chat } from './../model/Chat';
 import { Message } from '../model/Message';
 import { Base64 } from '../util/Base64';
-// import { ContactsController } from './ContactsController';
+import { ContactsController } from './ContactsController';
 
 
 export class WhatsAppController {
@@ -963,7 +963,7 @@ export class WhatsAppController {
        */
 
   }
-
+	//mic
   startRecordMicrophoneTime() {
 
       this._microphoneController = new MicrophoneController();

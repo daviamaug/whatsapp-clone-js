@@ -17,16 +17,39 @@
     this.init()
   }
   init(){  
-  if(!this._initialized){
+  if(!window._initializedFirebase){
     firebase.initializeApp(this._firebaseConfig);
     firebase.analytics();
 
-    firebase.firestore().settings({
-      timestampsInSnapshots:true
-    })
-    this._initialized=true
+    this._initializedFirebase=true
   }
   }
+  initAuth(){
+
+    return new Promise((s, f)=>{
+
+        let provider = new firebase.auth.GoogleAuthProvider();
+
+        firebase.auth().signInWithPopup(provider).then(function (result) {
+
+            let token = result.credential.accessToken;
+            let user = result.user;
+
+            s({
+              user, 
+              token
+            });
+
+        }).catch(function (error) {
+
+            f(error);
+
+        });
+
+    });        
+
+}
+
   static db(){
 
     return firebase.firestore()
