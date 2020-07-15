@@ -16,7 +16,7 @@
   "license": "ISC",
   "devDependencies": {
     "webpack": "^3.1.0",
-    "webpack-dev-server": "^2.5.1",
+    "webpack-dev-server": "^3.1.11",
     "worker-loader": "^1.1.1"
   },
   "dependencies": {
